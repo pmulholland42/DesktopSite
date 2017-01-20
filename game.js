@@ -4,6 +4,8 @@ var points = 3;
 // The distance between the points:
 var length = 40;
 
+var activeItem;
+
 view.viewSize = new Size(window.innerWidth, window.innerHeight);
 
 // var path = new Path({
@@ -21,81 +23,89 @@ view.viewSize = new Size(window.innerWidth, window.innerHeight);
 // });
 
 var guy = new Person(view.center / [10, 1]);
+var character = new Group({
+	children: [guy.head, guy.rArmPath, guy.lArmPath, guy.lLegPath, guy.rLegPath, guy.bodyPath]
+});
 
 // var start = (view.center / [10, 1]);
 // for (var i = 0; i < points; i++)
 // 	path.add(start + new Point(i * length, 0));				// making points in the path for the body
 
-function onMouseMove(event) {
-
-	guy.head.position = event.point;										// The position of the circle is at the mouse
-
-	guy.bodyPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
-	guy.bodyPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
-	var bodyPath = guy.bodyPath;											// making the body segments to the path
-	for (var i = 0; i < 2; i++) {
-		var segment  = bodyPath.segments[i];
-		var nextSeg = segment.next;
-		var vec = segment.point - nextSeg.point;
-		vec.length = 40;
-		nextSeg.point = segment.point - vec;
-	}//for
-	bodyPath.smooth({type: 'continuous'});
-
-	guy.lArmPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
-	guy.lArmPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
-	var lArmPath = guy.lArmPath;											// making the body segments to the path
-	for (var i = 0; i < 2; i++) {
-		var segment  = lArmPath.segments[i];
-		var nextSeg = segment.next;
-		var vec = segment.point - nextSeg.point;
-		vec.length = 30;
-		nextSeg.point = segment.point - vec;
-	}//for
-	lArmPath.smooth({type: 'continuous'});
-
-	guy.rArmPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
-	guy.rArmPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
-	var rArmPath = guy.rArmPath;											// making the body segments to the path
-	for (var i = 0; i < 2; i++) {
-		var segment  = rArmPath.segments[i];
-		var nextSeg = segment.next;
-		var vec = segment.point - nextSeg.point;
-		vec.length = 30;
-		nextSeg.point = segment.point - vec;
-	}//for
-	rArmPath.smooth({type: 'continuous'});
-
-	guy.lLegPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
-	guy.lLegPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
-	var lLegPath = guy.lLegPath;											// making the body segments to the path
-	for (var i = 0; i < 2; i++) {
-		var segment  = lLegPath.segments[i];
-		var nextSeg = segment.next;
-		var vec = segment.point - nextSeg.point;
-		vec.length = 40;
-		nextSeg.point = segment.point - vec;
-	}//for
-	lLegPath.smooth({type: 'continuous'});
-
-	guy.rLegPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
-	guy.rLegPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
-	var rLegPath = guy.rLegPath;											// making the body segments to the path
-	for (var i = 0; i < 2; i++) {
-		var segment  = rLegPath.segments[i];
-		var nextSeg = segment.next;
-		var vec = segment.point - nextSeg.point;
-		vec.length = 40;
-		nextSeg.point = segment.point - vec;
-	}//for
-	rLegPath.smooth({type: 'continuous'});
-}//onMouseMove
-
-// function onMouseDown(event) {
-// 	path.fullySelected = true;
-// 	path.strokeColor = '#e08285';
-// }
+// function onMouseMove(event) {
 //
+// 	guy.head.position = event.point;										// The position of the circle is at the mouse
+//
+// 	guy.bodyPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
+// 	guy.bodyPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
+// 	var bodyPath = guy.bodyPath;											// making the body segments to the path
+// 	for (var i = 0; i < 2; i++) {
+// 		var segment  = bodyPath.segments[i];
+// 		var nextSeg = segment.next;
+// 		var vec = segment.point - nextSeg.point;
+// 		vec.length = 40;
+// 		nextSeg.point = segment.point - vec;
+// 	}//for
+// 	bodyPath.smooth({type: 'continuous'});
+//
+// 	guy.lArmPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
+// 	guy.lArmPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
+// 	var lArmPath = guy.lArmPath;											// making the body segments to the path
+// 	for (var i = 0; i < 2; i++) {
+// 		var segment  = lArmPath.segments[i];
+// 		var nextSeg = segment.next;
+// 		var vec = segment.point - nextSeg.point;
+// 		vec.length = 30;
+// 		nextSeg.point = segment.point - vec;
+// 	}//for
+// 	lArmPath.smooth({type: 'continuous'});
+//
+// 	guy.rArmPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
+// 	guy.rArmPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
+// 	var rArmPath = guy.rArmPath;											// making the body segments to the path
+// 	for (var i = 0; i < 2; i++) {
+// 		var segment  = rArmPath.segments[i];
+// 		var nextSeg = segment.next;
+// 		var vec = segment.point - nextSeg.point;
+// 		vec.length = 30;
+// 		nextSeg.point = segment.point - vec;
+// 	}//for
+// 	rArmPath.smooth({type: 'continuous'});
+//
+// 	guy.lLegPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
+// 	guy.lLegPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
+// 	var lLegPath = guy.lLegPath;											// making the body segments to the path
+// 	for (var i = 0; i < 2; i++) {
+// 		var segment  = lLegPath.segments[i];
+// 		var nextSeg = segment.next;
+// 		var vec = segment.point - nextSeg.point;
+// 		vec.length = 40;
+// 		nextSeg.point = segment.point - vec;
+// 	}//for
+// 	lLegPath.smooth({type: 'continuous'});
+//
+// 	guy.rLegPath.firstSegment.point.y = event.point.y + guy.head.radius;	// moving the body to the edge
+// 	guy.rLegPath.firstSegment.point.x = event.point.x;						// moving the x part to the edge
+// 	var rLegPath = guy.rLegPath;											// making the body segments to the path
+// 	for (var i = 0; i < 2; i++) {
+// 		var segment  = rLegPath.segments[i];
+// 		var nextSeg = segment.next;
+// 		var vec = segment.point - nextSeg.point;
+// 		vec.length = 40;
+// 		nextSeg.point = segment.point - vec;
+// 	}//for
+// 	rLegPath.smooth({type: 'continuous'});
+// }//onMouseMove
+
+function onMouseDown(event) {
+	var hitResult = character.hitTest(event.point);
+	activeItem = hitResult && hitResult.item;
+}//onMouseDown
+
+function onMouseDrag(event){
+	if(activeItem)
+		activeItem.position = event.point;
+}//onMouseDrag
+
 // function onMouseUp(event) {
 // 	path.fullySelected = false;
 // 	path.strokeColor = '#000000';
