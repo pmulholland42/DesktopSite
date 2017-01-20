@@ -1,0 +1,10 @@
+canvas {
+    display: block;
+    position: absolute;
+}
+body{
+    position: relative;
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
